@@ -2,16 +2,7 @@
 const http = require('http');
 const { v4: uuidv4 } = require('uuid');
 const errHandle =require('./errorHandle');
-const todos = [
-    {
-        "title": "今天要買菜",
-        "id": uuidv4()
-    },
-    {
-        "title": "今天吃大餐",
-        "id": uuidv4()
-    }
-];
+const todos = [];
 
 const requestListener = (req, res) => {
     const headers = {
@@ -28,7 +19,7 @@ const requestListener = (req, res) => {
 
     console.log(req.url);
     console.log(req.method);
-    if(req.url == "/" && req.method == 'GET'){
+    if(req.url == "/todos" && req.method == 'GET'){
         res.writeHead(200, headers);
         res.write(JSON.stringify({
             "status": "success",
