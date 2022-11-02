@@ -108,7 +108,7 @@ const requestListener = (req, res) => {
         res.writeHead(404, headers);
         res.write(JSON.stringify({
             "status": "false",
-            "message": "no data found"
+            "message": "查無此網站路由"
         }));
         res.end();
     }
