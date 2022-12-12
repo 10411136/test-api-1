@@ -2,4 +2,4 @@
 npm install
 
 # 執行程式
-npm run start
+npm run start 
