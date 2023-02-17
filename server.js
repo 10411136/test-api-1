@@ -2,7 +2,7 @@
 const http = require('http');
 const { v4: uuidv4 } = require('uuid');
 const errHandle =require('./errorHandle');
-const todos = [];
+const data = [];
 
 const requestListener = (req, res) => {
     const headers = {
@@ -17,32 +17,56 @@ const requestListener = (req, res) => {
     });
     
 
-    console.log(req.url);
-    console.log(req.method);
-    if(req.url == "/todos" && req.method == 'GET'){
+    //console.log(req.url);
+    //console.log(req.method);
+    if(req.url == "/query" && req.method == 'GET'){
         res.writeHead(200, headers);
         res.write(JSON.stringify({
             "status": "success",
-            "data": todos
+            "data": data
         }));
         res.end();
-    }else if(req.url == "/todos" && req.method == 'POST'){
+    }else if(req.url == "/query" && req.method == 'POST'){
         req.on('end', ()=>{
             try{
-                console.log(JSON.parse(body));
-                const title = JSON.parse(body).title;
-                console.log(title);
-                if(title !== undefined){
-                    const todo = {
-                        "title": title,
-                        "id": uuidv4()
+                const deviceType = JSON.parse(body).deviceType;
+                const os = JSON.parse(body).os;
+                const osVersion = JSON.parse(body).osVersion;
+                const browser = JSON.parse(body).browser;
+                const browserVersion = JSON.parse(body).browserVersion;
+                const browserVendor = JSON.parse(body).browserVendor;
+                const isFromIphone = JSON.parse(body).isFromIphone;
+                const isFromIpad = JSON.parse(body).isFromIpad;
+                const isFromIpod = JSON.parse(body).isFromIpod;
+                const isFromIos = JSON.parse(body).isFromIos;
+                const isFromAndroidMobile = JSON.parse(body).isFromAndroidMobile;
+                const isFromAndroidTablet = JSON.parse(body).isFromAndroidTablet;
+                const isFromAndroidOs = JSON.parse(body).isFromAndroidOs;
+                const timeStamp = JSON.parse(body).timeStamp;
+                if(deviceType !== undefined){
+                    const container = {
+                        "id": uuidv4(),
+                        "deviceType": deviceType,
+                        "os": os,
+                        "osVersion": osVersion,
+                        "browser": browser,
+                        "browserVersion": browserVersion,
+                        "browserVendor": browserVendor,
+                        "isFromIphone": isFromIphone,
+                        "isFromIpad": isFromIpad,
+                        "isFromIpod": isFromIpod,
+                        "isFromIos": isFromIos,
+                        "isFromAndroidMobile": isFromAndroidMobile,
+                        "isFromAndroidTablet": isFromAndroidTablet,
+                        "isFromAndroidOs": isFromAndroidOs,
+                        "timeStamp": timeStamp
                     }
-                    todos.push(todo);
-                    console.log(todo);
+                    data.push(container);
+                    //console.log("container=>" + container);
                     res.writeHead(200, headers);
                     res.write(JSON.stringify({
                         "status": "success",
-                        "data": todos
+                        "data": data
                     }));
                     res.end();
                 }else{
@@ -55,53 +79,21 @@ const requestListener = (req, res) => {
             
         })
     
-    }else if(req.url == "/todos" && req.method == 'DELETE'){
-        todos.length = 0;
-        res.writeHead(200, headers);
-        res.write(JSON.stringify({
-            "status": "success",
-            "data": todos
-        }));
-        res.end();
-    }else if(req.url.startsWith("/todos/") && req.method=="DELETE"){
+    }else if(req.url.startsWith("/data/") && req.method=="DELETE"){
         const id = req.url.split('/').pop();
-        const index = todos.findIndex(element => element.id == id);
+        const index = data.findIndex(element => element.id == id);
         if(index !== -1){
-            todos.splice(index, 1); // 存在此資料，才將該筆資料刪除
+            data.splice(index, 1); // 存在此資料，才將該筆資料刪除
             res.writeHead(200, headers);
             res.write(JSON.stringify({
                 "status": "success",
-                "data": todos
+                "data": data
             }));
             res.end();
         }else{
             errHandle(res);
         }
-        
-        
-    }else if(req.url.startsWith("/todos/") && req.method=="PATCH"){
-        req.on('end', ()=>{
-            try{
-                const todo = JSON.parse(body).title;
-                const id = req.url.split('/').pop();
-                const index = todos.findIndex(element => element.id == id);
-                if(todo !== undefined && index !== -1){
-                    todos[index].title = todo;
-                    res.writeHead(200, headers); // 寫入表頭
-                    res.write(JSON.stringify({ // 寫入成功資料
-                        "status": "success",
-                        "data": todos
-                    }));
-                    res.end(); // 回傳資料
-                }else{
-                    errHandle(res);
-                }
-            }catch{
-                errHandle(res);
-            }
-        })
-    }
-    else if(req.method == 'OPTIONS'){
+    }else if(req.method == 'OPTIONS'){
         res.writeHead(200, headers);
         res.end();
     }else{
@@ -115,4 +107,4 @@ const requestListener = (req, res) => {
 
 }
 const server = http.createServer(requestListener);
-server.listen(process.env.PORT || 3005);
+server.listen(process.env.PORT || 8080);
