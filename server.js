@@ -18,7 +18,7 @@ const requestListener = (req, res) => {
     
 
     //console.log(req.url);
-    //console.log(req.method);
+    //console.log(req.method); 
     if(req.url == "/query" && req.method == 'GET'){
         res.writeHead(200, headers);
         res.write(JSON.stringify({
